@@ -281,6 +281,19 @@ describe("!popcorn done", () => {
         expect(mockTurnOrder.length).toBe(3);
         expect(mockTurnOrder[1].pr).toBe(checkedEmoji);
         expect(mockTurnOrder[2].pr).toBe(uncheckedEmoji);
+    })
+    it('should not fail if token is not found', () => {
+        const msg = createMsg("!popcorn done");
+        msg.selected = [{ _id: "1" }];
+        mockTurnOrder.push({
+            id: "2",
+            pr: uncheckedEmoji,
+        })
+
+        global.triggerEvent('chat:message', msg);
+
+        expect(mockTurnOrder.length).toBe(1);
+        expect(mockTurnOrder[0].pr).toBe(uncheckedEmoji);
     });
 })
 

@@ -68,11 +68,15 @@ var shuffling = false;
 
 
 function getNotCustom(turnOrder) {
-    return turnOrder.filter(turn => isRegular(turn));
+    return turnOrder
+        .filter(turn => turn !== undefined && turn !== undefined)
+        .filter(turn => isRegular(turn));
 }
 
 function getCustom(turnOrder) {
-    return turnOrder.filter(turn => isCustom(turn));
+    return turnOrder
+        .filter(turn => turn !== undefined && turn !== undefined)
+        .filter(turn => isCustom(turn));
 }
 var turn = 0;
 
@@ -315,12 +319,20 @@ function round() {
     let turnOrder = getTurnOrder();
 
     turnOrder.forEach(turn => {
-        if (turn.custom === "" || turn.custom == undefined) {
+        if (turn.custom === "" || turn.custom === undefined) {
             turn.pr = unchecked;
             return;
         }
 
-        let current = parseInt(turn.pr, 10);
+        var current = 0;
+        if (hasValue(turn.pr)) {
+            current = parseInt(turn.pr, 10);
+        }
+
+        if (!hasValue(turn.formula)) {
+            return;
+        }
+
         // Negative formulas are not allowed to go below 0
         // Positive formulas can start with 0
         if (current == 0 && turn.formula.startsWith("-")) {
@@ -342,6 +354,10 @@ function round() {
 
     Campaign().set("turnorder", JSON.stringify(turnOrder));
     turn++;
+}
+
+function hasValue(val) {
+    return val !== undefined && val !== null && val !== "";
 }
 
 function kill(msg) {
